@@ -127,6 +127,14 @@ graph LR
 
 ---
 
+## Prerequisites
+
+- **Go** 1.21+
+- **Node.js** 18+ and npm
+- **Make** (optional, for convenience commands)
+
+---
+
 ## Quick Start
 
 ```bash
