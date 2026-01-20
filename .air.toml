@@ -1,0 +1,84 @@
+# Air - Live reload for Go apps
+# https://github.com/cosmtrek/air
+
+root = "."
+testdata_dir = "testdata"
+tmp_dir = "tmp"
+
+[build]
+  # Build command
+  cmd = "go build -o ./tmp/server ./cmd/server"
+  
+  # Binary file to execute
+  bin = "./tmp/server"
+  
+  # Arguments passed to binary
+  args_bin = ["-db", "./data/warp.db"]
+  
+  # Watch these file extensions
+  include_ext = ["go", "tpl", "tmpl", "html"]
+  
+  # Exclude these directories
+  exclude_dir = ["assets", "tmp", "vendor", "testdata", "web", "node_modules", "data"]
+  
+  # Exclude files matching these patterns
+  exclude_file = []
+  
+  # Exclude files with these regex patterns
+  exclude_regex = ["_test.go"]
+  
+  # Exclude unchanged files
+  exclude_unchanged = false
+  
+  # Follow symlinks
+  follow_symlink = false
+  
+  # Working directory (defaults to root)
+  full_bin = ""
+  
+  # Log file location
+  log = "build-errors.log"
+  
+  # Poll interval for file changes (ms)
+  poll = false
+  poll_interval = 0
+  
+  # Wait before rebuilding after change (ms)
+  delay = 500
+  
+  # Stop running old binary before building
+  stop_on_error = false
+  
+  # Send interrupt signal before kill
+  send_interrupt = true
+  
+  # Delay after interrupt before kill (ms)
+  kill_delay = 500
+  
+  # Rerun binary even if build failed
+  rerun = false
+  rerun_delay = 500
+
+[log]
+  # Show log time
+  time = false
+  
+  # Only show main log (errors, etc)
+  main_only = false
+
+[color]
+  # Customize colors
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+  runner = "green"
+
+[misc]
+  # Delete tmp directory on exit
+  clean_on_exit = true
+
+[screen]
+  # Clear screen on rebuild
+  clear_on_rebuild = true
+  # Keep scroll position on rebuild
+  keep_scroll = true
