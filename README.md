@@ -61,14 +61,14 @@ graph LR
     
     subgraph CU[ConsumeUpToAccrued]
         CU1[20 days/year policy]
-        CU2[Jan 1: 1.67 days available]
-        CU3[Earn monthly]
+        CU2[Jan 15: 0.77 days available]
+        CU3[Accrues continuously]
         CU1 --> CU2 --> CU3
     end
 ```
 
-- **ConsumeAhead**: Salaried employees. Get full entitlement on day 1. Can use 20 days in January.
-- **ConsumeUpToAccrued**: Hourly workers. Only use what you've earned. 1.67 days/month (20÷12).
+- **ConsumeAhead**: Full entitlement available on day 1. Typical for salaried employees.
+- **ConsumeUpToAccrued**: Only use what's been earned. Accrues continuously (pro-rated to the day). Rate is configurable: per year, per month, per hours worked, etc.
 
 ### How Balance is Calculated
 
