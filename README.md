@@ -26,25 +26,89 @@ Every company builds separate systems for PTO, rewards points, learning budgets�
 
 **The Solution:** One generic engine that handles the math; domains add constraints.
 
+---
+
+## Design Philosophy
+
+### Core Insight
+
+A PTO balance, a rewards point total, and a learning budget are all the same thing: **a number that changes over time according to rules**. The rules differ (accrual rates, expiration, carryover), but the mechanics are identical.
+
+### Key Principles
+
+**1. Append-Only Ledger**
+Never delete, never update—only append. Every change is a new transaction. This gives you a complete audit trail and makes debugging trivial. Want to undo something? Add a reversal transaction.
+
+**2. On-Demand Computation**
+Accruals are **computed at query time**, not stored. No cron jobs generating accrual records. No "accrual transactions" cluttering the ledger. Ask "what's my balance on March 15?" and the engine computes accruals from policy start to March 15, then adds/subtracts actual transactions.
+
+**3. Period-Based Balance**
+Balance is always relative to a **period** (usually a calendar year). "20 days available" means 20 days for *this period*. When the period ends, reconciliation handles carryover/expiration and starts fresh.
+
+**4. Policy Drives Everything**
+A policy defines: how much is granted, how it accrues, what happens at period end, whether you can go negative. The engine just executes rules—it has zero domain knowledge.
+
+### The Two Consumption Modes
+
 ```mermaid
 graph LR
-    subgraph Domains
-        PTO[PTO/Sick]
-        RW[Rewards]
-        LB[Learning]
+    subgraph CA[ConsumeAhead]
+        CA1[20 days/year policy]
+        CA2[Jan 1: 20 days available]
+        CA3[Use any time]
+        CA1 --> CA2 --> CA3
     end
     
-    subgraph Engine
-        BAL[Balance]
-        LED[Ledger]
-        REC[Reconcile]
+    subgraph CU[ConsumeUpToAccrued]
+        CU1[20 days/year policy]
+        CU2[Jan 1: 1.67 days available]
+        CU3[Earn monthly]
+        CU1 --> CU2 --> CU3
     end
-    
-    PTO --> BAL
-    RW --> BAL
-    LB --> BAL
-    BAL --> LED
-    REC --> LED
+```
+
+- **ConsumeAhead**: Salaried employees. Get full entitlement on day 1. Can use 20 days in January.
+- **ConsumeUpToAccrued**: Hourly workers. Only use what you've earned. 1.67 days/month (20÷12).
+
+### How Balance is Calculated
+
+```
+Balance = Computed Accruals (based on policy + time elapsed)
+        + Grants (bonuses, carryovers)
+        - Consumptions (time off taken)
+        - Pending (approved but not yet taken)
+        + Reversals (cancellations)
+```
+
+No stored "accrual transactions"—just the formula applied at query time.
+
+### Transaction Types
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `TxGrant` | One-time credit | Carryover from last year, signing bonus |
+| `TxConsumption` | Resource used | Took Jan 15 off |
+| `TxPending` | Approved, not yet used | Vacation next month |
+| `TxReversal` | Undo a consumption | Cancelled a day |
+| `TxReconciliation` | Period-end adjustment | Expired 3 unused days |
+| `TxAdjustment` | Admin correction | Fixed a mistake |
+
+### Reconciliation (End of Period)
+
+When a period ends:
+1. Calculate actual accrued balance (what was earned)
+2. Apply carryover rules (cap at X days, or none)
+3. Expire what can't carry over
+4. Create `TxGrant` for carryover in new period
+5. Create `TxReconciliation` for expired amount
+
+```mermaid
+graph LR
+    A[Period Ends] --> B[Calculate Accrued]
+    B --> C{Carryover Rules}
+    C -->|Allowed| D[TxGrant to new period]
+    C -->|Capped| E[TxGrant capped + TxReconciliation expired]
+    C -->|None| F[TxReconciliation all expired]
 ```
 
 ---
