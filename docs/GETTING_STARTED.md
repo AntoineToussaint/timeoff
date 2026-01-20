@@ -1,6 +1,6 @@
 # Getting Started
 
-> **Summary:** To run the system: install Go 1.21+ and Node 18+, run `go mod download` and `cd web && npm install`, then `make dev` to start both backend (port 8080) and frontend (port 5173) with hot-reload. Load demo scenarios via the UI or `curl -X POST localhost:8080/api/scenarios/load -d '{"scenario_id":"new-employee"}'`. Seven scenarios are available: new-employee, mid-year-hire, year-end-rollover, multi-policy, new-parent, rewards-benefits, hourly-worker. Key files to understand: `generic/types.go` (core types), `generic/resource.go` (ResourceType registry), `generic/policy.go` (policies), `timeoff/types.go` (domain resource types), `api/scenarios.go` (demo data). Run tests with `make test` (108 tests).
+> **Summary:** To run the system: install Go 1.21+ and Node 18+, run `go mod download` and `cd web && npm install`, then `make dev` to start both backend (port 8080) and frontend (port 5173) with hot-reload. Load demo scenarios via the UI or `curl -X POST localhost:8080/api/scenarios/load -d '{"scenario_id":"new-employee"}'`. Seven scenarios are available: new-employee, mid-year-hire, year-end-rollover, multi-policy, new-parent, rewards-benefits, hourly-worker. Key files to understand: `generic/types.go` (core types), `generic/resource.go` (ResourceType registry), `generic/policy.go` (policies), `timeoff/types.go` (domain resource types), `api/scenarios.go` (demo data). Run tests with `make test` (135+ tests).
 
 ---
 
@@ -85,12 +85,10 @@ curl -X POST http://localhost:8080/api/scenarios/load \
 
 # Available scenarios (7 total):
 # - new-employee       Basic PTO setup
-# - mid-year-hire      Prorated accruals for June hire
-# - year-end-rollover  Balance carryover with cap
 # - multi-policy       Multiple PTO sources (carryover, bonus, standard)
-# - new-parent         Maternity + PTO + Sick + Floating holidays
-# - rewards-benefits   Wellness points, learning credits, recognition
+# - year-end-rollover  Balance carryover with cap
 # - hourly-worker      ConsumeUpToAccrued mode (only earned balance)
+# - rewards-benefits   Wellness points, learning credits, recognition
 ```
 
 ---

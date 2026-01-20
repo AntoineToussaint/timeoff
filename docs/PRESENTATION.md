@@ -211,7 +211,7 @@ for _, policy := range sortedByPriority {
 | SQLite storage | ✅ Complete | Integration |
 | In-memory storage (testing) | ✅ Complete | Used in tests |
 | Projection engine | ✅ Complete | Covered |
-| **Total Tests** | | **108** |
+| **Total Tests** | | **135+** |
 
 ### 🚧 Proposed / TODO
 

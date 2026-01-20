@@ -1,6 +1,6 @@
 # Test Suite Documentation
 
-> **Summary:** The test suite contains 108+ tests organized as executable specifications that validate and document system behavior. `generic/spec_test.go` contains 24 specification tests mapping directly to DESIGN.md requirements (ledger invariants, period-based balance, consumption modes, multi-policy distribution, reconciliation). `generic/engine_test.go` covers core math. `timeoff/` tests cover day-uniqueness enforcement, multi-policy consumption, rollover scenarios, and all time-off resource types. `rewards/` tests cover wellness points, learning credits, recognition points, and different units. `api/scenarios_test.go` contains unit tests for all demo scenarios. Every demo scenario (new-employee, multi-policy, year-end-rollover, hourly-worker, rewards-benefits) has corresponding unit tests. Tests use domain types (not strings) and follow GIVEN/WHEN/THEN format with explanatory assertions.
+> **Summary:** The test suite contains 135+ tests organized as executable specifications that validate and document system behavior. `generic/spec_test.go` contains 24 specification tests mapping directly to DESIGN.md requirements (ledger invariants, period-based balance, consumption modes, multi-policy distribution, reconciliation). `generic/engine_test.go` covers core math. `timeoff/` tests cover day-uniqueness enforcement, multi-policy consumption, rollover scenarios, and all time-off resource types. `rewards/` tests cover wellness points, learning credits, recognition points, and different units. `api/scenarios_test.go` contains unit tests for all demo scenarios. Every demo scenario (new-employee, multi-policy, year-end-rollover, hourly-worker, rewards-benefits) has corresponding unit tests. Tests use domain types (not strings) and follow GIVEN/WHEN/THEN format with explanatory assertions.
 
 ---
 
@@ -48,7 +48,7 @@ graph TB
 | `timeoff/` | `ledger_test.go` | 18 | Day uniqueness invariant |
 | `timeoff/` | `timeoff_test.go` | 21 | Domain scenarios |
 | `rewards/` | `rewards_test.go` | 13 | Points, credits, different units |
-| **Total** | | **108+** | |
+| **Total** | | **135+** | |
 
 ---
 

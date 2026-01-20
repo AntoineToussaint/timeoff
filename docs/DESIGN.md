@@ -160,7 +160,7 @@ graph LR
     end
     
     subgraph "ConsumeUpToAccrued (January)"
-        B1[20 days/year] --> B2[1.67 available<br/>20÷12 months]
+        B1[20 days/year] --> B2[Accrues continuously<br/>pro-rated to day]
     end
 ```
 

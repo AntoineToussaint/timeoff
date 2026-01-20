@@ -11,10 +11,10 @@ This implementation **exceeds the original requirements** by delivering a truly 
 | Aspect | Assessment | Notes |
 |--------|------------|-------|
 | **Core Requirements** | ✅ Complete | All PDF requirements implemented |
-| **Bonus Challenges** | ✅ 4/4 Complete | Custom hours, holidays, carryover, tenure |
+| **Bonus Challenges** | ✅ 4/4 Complete | Custom hours, company holidays, carryover, tenure |
 | **Auditability** | ✅ Excellent | Append-only ledger, idempotency |
 | **Extensibility** | ✅ Exceeded | Generic engine + rewards system |
-| **Test Coverage** | ⚠️ Good | ~90+ tests, some edge cases missing |
+| **Test Coverage** | ✅ Good | 135+ tests, key edge cases covered |
 
 ---
 
@@ -47,7 +47,7 @@ This implementation **exceeds the original requirements** by delivering a truly 
 | Challenge | Status | Implementation |
 |-----------|--------|----------------|
 | **Custom work hours** | ✅ | `Amount` with `Unit` (days, hours, minutes) |
-| **Company holiday calendars** | ⚠️ Partial | `TimePoint.IsWorkday()` filters weekends; company-specific holidays not implemented |
+| **Company holiday calendars** | ✅ | `HolidayCalendar` interface, admin UI for holidays, default US holidays |
 | **Carryover & expiration** | ✅ | `ReconciliationEngine` with `ActionCarryover`, `ActionExpire`, `MaxCarryover` |
 | **Tenure-based policies** | ✅ | `TenureAccrual` with `TenureTier` progression |
 
