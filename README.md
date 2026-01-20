@@ -57,9 +57,9 @@ Every company builds separate systems for:
 ```mermaid
 graph TB
     subgraph "Domain Layer"
-        TO[Time-Off<br/>PTO, Sick, Parental]
-        RW[Rewards<br/>Points, Credits]
-        LB[Learning<br/>Budgets]
+        TO[Time-Off - PTO, Sick, Parental]
+        RW[Rewards - Points, Credits]
+        LB[Learning - Budgets]
         CUSTOM[Your Domain]
     end
     
@@ -89,12 +89,6 @@ graph TB
     LED --> SQL
     LED --> PG
     
-    style TO fill:#3b82f6,color:#fff
-    style RW fill:#10b981,color:#fff
-    style LB fill:#8b5cf6,color:#fff
-    style CUSTOM fill:#f59e0b,color:#fff
-    style BAL fill:#ef4444,color:#fff
-    style REC fill:#ef4444,color:#fff
 ```
 
 **Key Insight:** All timed resources share the same fundamental operations: accrue, consume, reconcile. The differences are in constraints and semantics, not math.
@@ -134,17 +128,17 @@ graph TB
     end
     
     subgraph Domain["📦 Domain Layer"]
-        TO_DOM[timeoff/<br/>PTO, Sick, Parental]
-        RW_DOM[rewards/<br/>Wellness, Learning]
+        TO_DOM[timeoff/ - PTO, Sick, Parental]
+        RW_DOM[rewards/ - Wellness, Learning]
     end
     
     subgraph Engine["⚙️ Generic Engine"]
-        BAL_ENG[Balance<br/>Calculator]
-        REC_ENG[Reconciliation<br/>Engine]
-        LED_ENG[Ledger<br/>Immutable]
-        PROJ_ENG[Projection<br/>Engine]
-        POL_ENG[Policy<br/>Rules]
-        ASS_ENG[Assignment<br/>Multi-Policy]
+        BAL_ENG[Balance - Calculator]
+        REC_ENG[Reconciliation - Engine]
+        LED_ENG[Ledger - Immutable]
+        PROJ_ENG[Projection - Engine]
+        POL_ENG[Policy - Rules]
+        ASS_ENG[Assignment - Multi-Policy]
     end
     
     subgraph Storage["💾 Storage Layer"]
@@ -172,11 +166,6 @@ graph TB
     POL_ENG --> BAL_ENG
     ASS_ENG --> BAL_ENG
     
-    style Frontend fill:#3b82f6,color:#fff
-    style API fill:#10b981,color:#fff
-    style Domain fill:#8b5cf6,color:#fff
-    style Engine fill:#ef4444,color:#fff
-    style Storage fill:#f59e0b,color:#fff
 ```
 
 ### Data Flow: Request to Balance
@@ -196,12 +185,12 @@ sequenceDiagram
     Domain->>Engine: Calculate balance
     Engine->>Store: Query transactions
     Store-->>Engine: Transaction history
-    Engine->>Engine: Calculate balance<br/>(period-based)
+    Engine->>Engine: Calculate balance - (period-based)
     Engine-->>Domain: Balance: 15 days available
-    Domain->>Domain: Check day uniqueness<br/>(time-off only)
+    Domain->>Domain: Check day uniqueness - (time-off only)
     Domain->>Engine: Create consumption transaction
-    Engine->>Engine: Validate projection<br/>(future balance)
-    Engine->>Store: Append transaction<br/>(idempotent)
+    Engine->>Engine: Validate projection - (future balance)
+    Engine->>Store: Append transaction - (idempotent)
     Store-->>Engine: Success
     Engine-->>Domain: Transaction created
     Domain-->>API: Request approved
@@ -248,9 +237,6 @@ graph LR
     GENERIC --> SQLITE_PKG
     GENERIC --> MEM_PKG
     
-    style GENERIC fill:#ef4444,color:#fff
-    style TO_PKG fill:#3b82f6,color:#fff
-    style RW_PKG fill:#10b981,color:#fff
 ```
 
 ---
@@ -264,11 +250,11 @@ The ledger is an **append-only, immutable log** of all changes. Think of it like
 ```mermaid
 graph LR
     subgraph Ledger["📜 Transaction Ledger"]
-        TX1[2025-01-01<br/>Accrual +20.00<br/>Annual grant]
-        TX2[2025-02-15<br/>Consumption -5.00<br/>Vacation]
-        TX3[2025-03-01<br/>Accrual +1.67<br/>Monthly]
-        TX4[2025-12-31<br/>Reconciliation +5.00<br/>Carryover]
-        TX5[2025-12-31<br/>Reconciliation -10.00<br/>Expired]
+        TX1[2025-01-01 - Accrual +20.00 - Annual grant]
+        TX2[2025-02-15 - Consumption -5.00 - Vacation]
+        TX3[2025-03-01 - Accrual +1.67 - Monthly]
+        TX4[2025-12-31 - Reconciliation +5.00 - Carryover]
+        TX5[2025-12-31 - Reconciliation -10.00 - Expired]
     end
     
     TX1 --> TX2
@@ -276,11 +262,6 @@ graph LR
     TX3 --> TX4
     TX4 --> TX5
     
-    style TX1 fill:#10b981,color:#fff
-    style TX2 fill:#ef4444,color:#fff
-    style TX3 fill:#10b981,color:#fff
-    style TX4 fill:#3b82f6,color:#fff
-    style TX5 fill:#f59e0b,color:#fff
 ```
 
 **Why append-only?**
@@ -329,21 +310,21 @@ The system tracks two balance concepts:
 ```mermaid
 graph TB
     subgraph Balance["Balance Calculation"]
-        ENT[TotalEntitlement<br/>Full period entitlement<br/>24 days/year]
-        ACC[AccruedToDate<br/>What's actually earned<br/>2 days for Dec hire]
-        CONS[TotalConsumed<br/>Days used]
-        ADJ[Adjustments<br/>Manual corrections]
+        ENT[TotalEntitlement - Full period entitlement - 24 days/year]
+        ACC[AccruedToDate - What's actually earned - 2 days for Dec hire]
+        CONS[TotalConsumed - Days used]
+        ADJ[Adjustments - Manual corrections]
     end
     
     subgraph Methods["Balance Methods"]
-        CURRENT[Current<br/>ENT - CONS + ADJ<br/>Full entitlement]
-        ACCRUED[CurrentAccrued<br/>ACC - CONS + ADJ<br/>Actual earned]
+        CURRENT[Current - ENT - CONS + ADJ - Full entitlement]
+        ACCRUED[CurrentAccrued - ACC - CONS + ADJ - Actual earned]
     end
     
     subgraph Usage["Usage"]
-        CA[ConsumeAhead<br/>Uses Current<br/>Can use full 24 days]
-        CUTA[ConsumeUpToAccrued<br/>Uses CurrentAccrued<br/>Only 2 days available]
-        REC[Reconciliation<br/>Uses CurrentAccrued<br/>Only reconcile earned]
+        CA[ConsumeAhead - Uses Current - Can use full 24 days]
+        CUTA[ConsumeUpToAccrued - Uses CurrentAccrued - Only 2 days available]
+        REC[Reconciliation - Uses CurrentAccrued - Only reconcile earned]
     end
     
     ENT --> CURRENT
@@ -357,10 +338,6 @@ graph TB
     ACCRUED --> CUTA
     ACCRUED --> REC
     
-    style ENT fill:#3b82f6,color:#fff
-    style ACC fill:#10b981,color:#fff
-    style CURRENT fill:#ef4444,color:#fff
-    style ACCRUED fill:#8b5cf6,color:#fff
 ```
 
 **Example**: Employee hired Dec 15 with 24 days/year policy:
@@ -376,26 +353,24 @@ Two fundamentally different approaches:
 
 ```mermaid
 graph LR
-    subgraph CA["ConsumeAhead Mode<br/>Salaried PTO"]
+    subgraph CA["ConsumeAhead Mode - Salaried PTO"]
         CA_POL[Policy: 20 days/year]
-        CA_AVAIL[Available Jan 1:<br/>20 days<br/>Full entitlement]
-        CA_USE[Can use all 20 days<br/>immediately]
+        CA_AVAIL[Available Jan 1: - 20 days - Full entitlement]
+        CA_USE[Can use all 20 days - immediately]
         
         CA_POL --> CA_AVAIL
         CA_AVAIL --> CA_USE
     end
     
-    subgraph CUTA["ConsumeUpToAccrued Mode<br/>Hourly Worker"]
+    subgraph CUTA["ConsumeUpToAccrued Mode - Hourly Worker"]
         CUTA_POL[Policy: 20 days/year]
-        CUTA_AVAIL[Available Jan 1:<br/>1.67 days<br/>20 ÷ 12 months]
-        CUTA_USE[Can only use<br/>what's earned]
+        CUTA_AVAIL[Available Jan 1: - 1.67 days - 20 ÷ 12 months]
+        CUTA_USE[Can only use - what's earned]
         
         CUTA_POL --> CUTA_AVAIL
         CUTA_AVAIL --> CUTA_USE
     end
     
-    style CA fill:#10b981,color:#fff
-    style CUTA fill:#3b82f6,color:#fff
 ```
 
 ### 5. Multi-Policy Distribution
@@ -404,24 +379,19 @@ Employees can have multiple policies for the same resource type. Consumption is 
 
 ```mermaid
 flowchart TD
-    REQ[Request: 10 days PTO] --> CHECK{Check Policies<br/>by Priority}
+    REQ[Request: 10 days PTO] --> CHECK{Check Policies - by Priority}
     
-    CHECK --> P1[Priority 1: Carryover<br/>5 days available]
+    CHECK --> P1[Priority 1: Carryover - 5 days available]
     P1 -->|Take 5| REMAIN1[Remaining: 5 days]
     
-    REMAIN1 --> P2[Priority 2: Bonus Days<br/>3 days available]
+    REMAIN1 --> P2[Priority 2: Bonus Days - 3 days available]
     P2 -->|Take 3| REMAIN2[Remaining: 2 days]
     
-    REMAIN2 --> P3[Priority 3: Standard PTO<br/>20 days available]
-    P3 -->|Take 2| DONE[Total: 10 days<br/>consumed]
+    REMAIN2 --> P3[Priority 3: Standard PTO - 20 days available]
+    P3 -->|Take 2| DONE[Total: 10 days - consumed]
     
-    DONE --> TX[Create Transaction<br/>with distribution]
+    DONE --> TX[Create Transaction - with distribution]
     
-    style REQ fill:#3b82f6,color:#fff
-    style P1 fill:#10b981,color:#fff
-    style P2 fill:#f59e0b,color:#fff
-    style P3 fill:#8b5cf6,color:#fff
-    style DONE fill:#ef4444,color:#fff
 ```
 
 ### 6. Reconciliation (Rollover & Expiration)
@@ -478,16 +448,16 @@ sequenceDiagram
     Engine->>Balance: Get CurrentAccrued()
     Balance-->>Engine: 2 days (prorated for Dec hire)
     
-    Engine->>Engine: Apply carryover rule<br/>maxCarryover = 5 days
+    Engine->>Engine: Apply carryover rule - maxCarryover = 5 days
     Engine->>Engine: carryover = min(2, 5) = 2 days
     
-    Engine->>Engine: Apply expire rule<br/>remaining = 2 - 2 = 0 days
+    Engine->>Engine: Apply expire rule - remaining = 2 - 2 = 0 days
     
-    Engine->>Ledger: Create TxReconciliation<br/>+2 days (carryover)
-    Engine->>Ledger: No expire transaction<br/>(nothing to expire)
+    Engine->>Ledger: Create TxReconciliation - +2 days (carryover)
+    Engine->>Ledger: No expire transaction - (nothing to expire)
     
     Ledger-->>Engine: Transactions created
-    Engine-->>Policy: Reconciliation complete<br/>2 days carried over
+    Engine-->>Policy: Reconciliation complete - 2 days carried over
 ```
 
 **Why CurrentAccrued()?**
@@ -574,9 +544,9 @@ classDiagram
     Policy --> ReconciliationRule
     ReconciliationRule --> ReconciliationAction
     
-    note for Policy "Defines rules for resource<br/>accrual, consumption,<br/>and reconciliation"
-    note for AccrualSchedule "Interface for calculating<br/>accrual events"
-    note for ReconciliationRule "What happens at<br/>period boundaries"
+    note for Policy "Defines rules for resource - accrual, consumption, - and reconciliation"
+    note for AccrualSchedule "Interface for calculating - accrual events"
+    note for ReconciliationRule "What happens at - period boundaries"
 ```
 
 ---
@@ -622,12 +592,12 @@ The system includes 6 demo scenarios that showcase all features:
 ```mermaid
 graph LR
     subgraph Scenarios["📊 Demo Scenarios"]
-        S1[new-employee<br/>Single policy<br/>ConsumeAhead]
-        S2[multi-policy<br/>Priority distribution<br/>3 PTO + sick]
-        S3[year-end-rollover<br/>Carryover with cap<br/>Reconciliation]
-        S4[policy-change<br/>Mid-year upgrade<br/>Reconciliation]
-        S5[hourly-worker<br/>ConsumeUpToAccrued<br/>Only earned]
-        S6[rewards-benefits<br/>Points system<br/>Multiple types]
+        S1[new-employee - Single policy - ConsumeAhead]
+        S2[multi-policy - Priority distribution - 3 PTO + sick]
+        S3[year-end-rollover - Carryover with cap - Reconciliation]
+        S4[policy-change - Mid-year upgrade - Reconciliation]
+        S5[hourly-worker - ConsumeUpToAccrued - Only earned]
+        S6[rewards-benefits - Points system - Multiple types]
     end
     
     S1 --> FEAT1[Basic accrual]
@@ -637,12 +607,6 @@ graph LR
     S5 --> FEAT5[Accrued mode]
     S6 --> FEAT6[Rewards]
     
-    style S1 fill:#10b981,color:#fff
-    style S2 fill:#3b82f6,color:#fff
-    style S3 fill:#8b5cf6,color:#fff
-    style S4 fill:#ec4899,color:#fff
-    style S5 fill:#f59e0b,color:#fff
-    style S6 fill:#ef4444,color:#fff
 ```
 
 Load scenarios via the UI or API:
@@ -676,14 +640,14 @@ sequenceDiagram
     Balance-->>System: Balance: 30 days available
     
     System->>Policies: Get policies by priority
-    Policies-->>System: 1. Carryover (5 days)<br/>2. Standard (20 days)<br/>3. Sick (10 days)
+    Policies-->>System: 1. Carryover (5 days) - 2. Standard (20 days) - 3. Sick (10 days)
     
-    System->>System: Distribute consumption<br/>Priority 1: Take 5<br/>Priority 2: Take 3
+    System->>System: Distribute consumption - Priority 1: Take 5 - Priority 2: Take 3
     
-    System->>Ledger: Create consumption transaction<br/>Distribution: [5, 3]
+    System->>Ledger: Create consumption transaction - Distribution: [5, 3]
     Ledger-->>System: Transaction created
     
-    System-->>User: Request approved<br/>8 days consumed
+    System-->>User: Request approved - 8 days consumed
 ```
 
 ---
@@ -712,22 +676,17 @@ go test ./api/... -v
 ```mermaid
 graph TB
     subgraph Tests["🧪 Test Coverage"]
-        GEN[Generic Engine<br/>24 spec tests<br/>35 engine tests]
-        TO[Time-Off<br/>Multi-policy<br/>Rollover<br/>Day uniqueness]
-        RW[Rewards<br/>Wellness points<br/>Learning credits<br/>Recognition]
-        API[API Scenarios<br/>5 scenario tests<br/>Integration tests]
+        GEN[Generic Engine - 24 spec tests - 35 engine tests]
+        TO[Time-Off - Multi-policy - Rollover - Day uniqueness]
+        RW[Rewards - Wellness points - Learning credits - Recognition]
+        API[API Scenarios - 5 scenario tests - Integration tests]
     end
     
-    GEN --> COVERAGE[135+ Tests<br/>Comprehensive Coverage]
+    GEN --> COVERAGE[135+ Tests - Comprehensive Coverage]
     TO --> COVERAGE
     RW --> COVERAGE
     API --> COVERAGE
     
-    style GEN fill:#10b981,color:#fff
-    style TO fill:#3b82f6,color:#fff
-    style RW fill:#8b5cf6,color:#fff
-    style API fill:#f59e0b,color:#fff
-    style COVERAGE fill:#ef4444,color:#fff
 ```
 
 ---
@@ -737,12 +696,12 @@ graph TB
 ```mermaid
 graph LR
     subgraph Docs["📚 Documentation"]
-        DESIGN[DESIGN.md<br/>Philosophy & Concepts]
-        ENG[ENGINEERING.md<br/>Architecture & Flow]
-        START[GETTING_STARTED.md<br/>Setup & Running]
-        IMPL[IMPLEMENTATION.md<br/>Technical Details]
-        TEST[TESTING.md<br/>Test Coverage]
-        REVIEW[CODE_REVIEW_GUIDE.md<br/>How to Review]
+        DESIGN[DESIGN.md - Philosophy & Concepts]
+        ENG[ENGINEERING.md - Architecture & Flow]
+        START[GETTING_STARTED.md - Setup & Running]
+        IMPL[IMPLEMENTATION.md - Technical Details]
+        TEST[TESTING.md - Test Coverage]
+        REVIEW[CODE_REVIEW_GUIDE.md - How to Review]
     end
     
     START --> DESIGN
@@ -751,9 +710,6 @@ graph LR
     IMPL --> TEST
     TEST --> REVIEW
     
-    style DESIGN fill:#3b82f6,color:#fff
-    style ENG fill:#10b981,color:#fff
-    style START fill:#8b5cf6,color:#fff
 ```
 
 | Document | Description |
@@ -774,22 +730,22 @@ graph LR
 ```mermaid
 graph TB
     subgraph Root["warp/"]
-        subgraph Generic["generic/<br/>Core Engine"]
-            TYPES[types.go<br/>Amount, Transaction]
-            POLICY[policy.go<br/>Policy, Reconciliation]
-            BALANCE[balance.go<br/>Balance Calculation]
-            LEDGER[ledger.go<br/>Immutable Ledger]
+        subgraph Generic["generic/ - Core Engine"]
+            TYPES[types.go - Amount, Transaction]
+            POLICY[policy.go - Policy, Reconciliation]
+            BALANCE[balance.go - Balance Calculation]
+            LEDGER[ledger.go - Immutable Ledger]
         end
         
         subgraph Domain["Domain Packages"]
-            TO_DOM[timeoff/<br/>PTO, Sick, Parental]
-            RW_DOM[rewards/<br/>Points, Credits]
+            TO_DOM[timeoff/ - PTO, Sick, Parental]
+            RW_DOM[rewards/ - Points, Credits]
         end
         
         subgraph Infra["Infrastructure"]
-            STORE[store/sqlite/<br/>Persistence]
-            API_PKG[api/<br/>REST Handlers]
-            WEB[web/<br/>React Frontend]
+            STORE[store/sqlite/ - Persistence]
+            API_PKG[api/ - REST Handlers]
+            WEB[web/ - React Frontend]
         end
     end
     
@@ -799,9 +755,6 @@ graph TB
     API_PKG --> RW_DOM
     Generic --> STORE
     
-    style Generic fill:#ef4444,color:#fff
-    style TO_DOM fill:#3b82f6,color:#fff
-    style RW_DOM fill:#10b981,color:#fff
 ```
 
 ---
@@ -838,8 +791,6 @@ graph LR
         ENGINE --> D4
     end
     
-    style Old fill:#ef4444,color:#fff
-    style New fill:#10b981,color:#fff
 ```
 
 ### 2. ResourceType as Interface, Not String
@@ -867,7 +818,7 @@ classDiagram
     ResourceType <|.. TimeOffResource
     ResourceType <|.. RewardsResource
     
-    note for ResourceType "Generic engine only knows<br/>the interface, not<br/>domain types"
+    note for ResourceType "Generic engine only knows - the interface, not - domain types"
 ```
 
 ### 3. Append-Only Ledger
@@ -890,10 +841,6 @@ graph LR
     TX1 -.->|Never Modified| TX1
     TX2 -.->|Never Deleted| TX2
     
-    style TX1 fill:#10b981,color:#fff
-    style TX2 fill:#10b981,color:#fff
-    style TX3 fill:#10b981,color:#fff
-    style TX4 fill:#10b981,color:#fff
 ```
 
 ### 4. Period-Based Balance
@@ -959,20 +906,14 @@ This implementation covers **100% of core requirements** from the original speci
 ```mermaid
 graph LR
     subgraph Future["🔮 Roadmap"]
-        E1[Authentication<br/>& Authorization]
-        E2[Cross-Period<br/>Requests]
-        E3[Audit<br/>Query API]
-        E4[GraphQL<br/>API]
-        E5[Webhook<br/>Support]
-        E6[Balance<br/>Snapshots]
+        E1[Authentication - & Authorization]
+        E2[Cross-Period - Requests]
+        E3[Audit - Query API]
+        E4[GraphQL - API]
+        E5[Webhook - Support]
+        E6[Balance - Snapshots]
     end
     
-    style E1 fill:#10b981,color:#fff
-    style E2 fill:#ef4444,color:#fff
-    style E3 fill:#3b82f6,color:#fff
-    style E4 fill:#ec4899,color:#fff
-    style E5 fill:#f59e0b,color:#fff
-    style E6 fill:#8b5cf6,color:#fff
 ```
 
 - [ ] Authentication and authorization
